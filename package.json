@@ -1,0 +1,13 @@
+{
+  "name": "te-lo-busco-ya",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "latest"
+  }
+}

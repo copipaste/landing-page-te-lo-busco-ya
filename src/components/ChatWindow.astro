@@ -1,0 +1,17 @@
+<section id="cotizar" class="chat-console" aria-labelledby="chat-title">
+  <div class="console-bar">
+    <span class="status-light" aria-hidden="true"></span>
+    <p>en linea</p>
+  </div>
+  <h2 id="chat-title" class="sr-only">Asistente LYRA</h2>
+  <div class="chat-frame">
+    <custom-chatbot
+      api-url="https://telobuscoya.lyra-agent.tech"
+      bot-name="LYRA"
+      color-primary="#DC2626"
+      welcome-message="Hola ¿Qué repuesto necesitás?"
+    ></custom-chatbot>
+  </div>
+</section>
+
+<script is:inline src="https://telobuscoya.lyra-agent.tech/widgets/chatbot.js" defer></script>

@@ -1,0 +1,106 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import hydraulicPump from '../assets/parts/hydraulic-pump.png';
+import turbocharger from '../assets/parts/turbocharger.png';
+---
+
+<BaseLayout title="No encuentro mi repuesto | Te lo busco Ya" description="Déjanos los detalles del repuesto que necesitas y te ayudaremos a buscarlo en nuestra red de proveedores.">
+  <a class="skip-link" href="#solicitud-form">Ir al formulario de solicitud</a>
+  <Header />
+
+  <main id="inicio" class="request-page">
+    <section class="special-request" aria-labelledby="special-request-title">
+      <div class="special-request-copy">
+        <span class="request-orbit request-orbit--one" aria-hidden="true"></span>
+        <span class="request-orbit request-orbit--two" aria-hidden="true"></span>
+        <Image class="request-part request-part--pump" src={hydraulicPump} alt="" loading="eager" decoding="async" />
+        <Image class="request-part request-part--turbo" src={turbocharger} alt="" loading="eager" decoding="async" />
+        <div class="special-request-content">
+          <a class="back-link" href="/#inicio"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="m15 18-6-6 6-6M9 12h11" /></svg>Volver al inicio</a>
+          <h1 id="special-request-title">¿No encuentras lo que buscas?</h1>
+          <p>Déjanos tus datos y el detalle del repuesto. Nuestro equipo de expertos lo buscará por ti en toda nuestra red de proveedores.</p>
+          <p class="request-email">También puedes escribirnos a <a href="mailto:info@telobuscoya.com">info@telobuscoya.com</a>.</p>
+        </div>
+      </div>
+
+      <div class="special-request-form-wrap">
+        <form id="solicitud-form" class="special-request-form" novalidate>
+          <div class="form-heading">
+            <h2>Cuéntanos qué necesitas</h2>
+            <p>Incluye las medidas, marca, modelo o una descripción que ayude a identificar el repuesto.</p>
+          </div>
+
+          <div class="form-fields">
+            <label>
+              <span>Nombre completo</span>
+              <input name="nombre" type="text" autocomplete="name" required />
+            </label>
+            <label>
+              <span>Correo electrónico</span>
+              <input name="correo" type="email" autocomplete="email" inputmode="email" required />
+            </label>
+            <label>
+              <span>Teléfono / WhatsApp</span>
+              <input name="telefono" type="tel" autocomplete="tel" inputmode="tel" required />
+            </label>
+            <label>
+              <span>Mensaje <small>(detalle del repuesto)</small></span>
+              <textarea name="mensaje" rows="5" required></textarea>
+            </label>
+          </div>
+
+          <button class="button-primary form-submit" type="submit">Preparar solicitud por correo<svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" /></svg></button>
+          <p class="form-note">Al continuar, se abrirá tu aplicación de correo con la solicitud lista para enviar.</p>
+          <p class="form-status" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand" href="/#inicio" aria-label="Volver al inicio de Te lo busco Ya">
+      <img src="/brand/logo.webp" width="40" height="40" alt="" />
+      <span>Te lo busco <strong>Ya</strong></span>
+    </a>
+    <div class="footer-contact">
+      <p>Santa Cruz · Cobertura nacional</p>
+      <a href="mailto:info@telobuscoya.com">info@telobuscoya.com</a>
+    </div>
+    <div class="footer-social">
+      <p>Seguinos</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Instagram de Te lo busco Ya"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".8" fill="currentColor" stroke="none" /></svg></a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Facebook de Te lo busco Ya"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M14.5 21v-7h2.5l.5-3h-3v-1.7c0-1 .3-1.7 1.8-1.7H18V4.9c-.4-.1-1.2-.2-2.2-.2-2.2 0-3.8 1.3-3.8 3.8V11H9.5v3H12v7" /></svg></a>
+        <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="LinkedIn de Te lo busco Ya"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M7 9v8M7 6.5v.1M11 17v-4.4c0-2.3 1.4-3.6 3.2-3.6 1.9 0 2.8 1.2 2.8 3.6V17M11 12.4V9" /></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#solicitud-form');
+    const status = document.querySelector<HTMLElement>('[data-form-status]');
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      form.classList.add('was-submitted');
+      if (!form.checkValidity()) {
+        if (status) status.textContent = 'Revisa los campos marcados antes de continuar.';
+        form.reportValidity();
+        return;
+      }
+
+      const fields = new FormData(form);
+      const name = String(fields.get('nombre') ?? '');
+      const email = String(fields.get('correo') ?? '');
+      const phone = String(fields.get('telefono') ?? '');
+      const message = String(fields.get('mensaje') ?? '');
+      const subject = encodeURIComponent(`Solicitud de repuesto | ${name}`);
+      const body = encodeURIComponent(`Nombre completo: ${name}\nCorreo electrónico: ${email}\nTeléfono / WhatsApp: ${phone}\n\nDetalle del repuesto:\n${message}`);
+
+      if (status) status.textContent = 'Abriendo tu aplicación de correo…';
+      window.location.href = `mailto:info@telobuscoya.com?subject=${subject}&body=${body}`;
+    });
+  </script>
+</BaseLayout>

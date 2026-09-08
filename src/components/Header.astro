@@ -1,0 +1,57 @@
+---
+const isSpecialRequest = Astro.url.pathname.startsWith('/solicitud-especial');
+const landingLink = (anchor: string) => isSpecialRequest ? `/${anchor}` : anchor;
+---
+
+<header class="site-header">
+  <a class="brand" href={landingLink('#inicio')} aria-label="Te lo busco Ya, inicio">
+    <img src="/brand/logo.webp" width="44" height="44" alt="" />
+    <span>Te lo busco <strong>Ya</strong></span>
+  </a>
+
+  <nav id="primary-navigation" aria-label="Navegación principal">
+    <a href={landingLink('#ruta')}>Cómo funciona</a>
+    <a href={landingLink('#categorias')}>Qué cotizamos</a>
+    <a href={landingLink('#preguntas')}>Preguntas frecuentes</a>
+    <a href={landingLink('#nosotros')}>Nosotros</a>
+    <a href={landingLink('#respaldo')}>Respaldo</a>
+    <a href="/solicitud-especial" aria-current={isSpecialRequest ? 'page' : undefined}>No encuentro mi repuesto</a>
+  </nav>
+
+  <div class="header-actions">
+    <a class="nav-cta" href={isSpecialRequest ? '#solicitud-form' : '#cotizar'}>
+      {isSpecialRequest ? 'Completar solicitud' : 'Cotizar un repuesto'}
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
+    </a>
+    <button class="menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
+      <span class="sr-only">Abrir menú de navegación</span>
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+    </button>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector('.site-header');
+  const menuToggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const menu = document.querySelector('#primary-navigation');
+
+  if (header && menuToggle && menu) {
+    const setMenuOpen = (open: boolean) => {
+      header.classList.toggle('is-menu-open', open);
+      document.body.classList.toggle('menu-open', open);
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.querySelector('.sr-only')!.textContent = open ? 'Cerrar menú de navegación' : 'Abrir menú de navegación';
+    };
+
+    menuToggle.addEventListener('click', () => setMenuOpen(!header.classList.contains('is-menu-open')));
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) setMenuOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 1100) setMenuOpen(false);
+    });
+  }
+</script>
