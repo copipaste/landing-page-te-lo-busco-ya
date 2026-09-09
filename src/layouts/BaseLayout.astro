@@ -11,8 +11,15 @@ const { title, description } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#f8fafc" />
     <link rel="preload" href="/inter.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preconnect" href="https://telobuscoya.lyra-agent.tech" />
+    <script is:inline>
+      const savedTheme = localStorage.getItem('tlby-theme');
+      const theme = savedTheme === 'dark' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = theme;
+    </script>
     <title>{title}</title>
   </head>
   <body><slot /></body>

@@ -16,6 +16,11 @@ const landingLink = (anchor: string) => isSpecialRequest ? `/${anchor}` : anchor
     <a href={landingLink('#nosotros')}>Nosotros</a>
     <a href={landingLink('#respaldo')}>Respaldo</a>
     <a href="/solicitud-especial" aria-current={isSpecialRequest ? 'page' : undefined}>No encuentro mi repuesto</a>
+    <button class="theme-toggle theme-toggle--menu" type="button" data-theme-toggle>
+      <svg class="theme-icon theme-icon--sun" aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+      <svg class="theme-icon theme-icon--moon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M20.5 14.2A8.4 8.4 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z" /></svg>
+      <span data-theme-label>Activar modo noche</span>
+    </button>
   </nav>
 
   <div class="header-actions">
@@ -23,6 +28,11 @@ const landingLink = (anchor: string) => isSpecialRequest ? `/${anchor}` : anchor
       {isSpecialRequest ? 'Completar solicitud' : 'Cotizar un repuesto'}
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
     </a>
+    <button class="theme-toggle theme-toggle--header" type="button" data-theme-toggle>
+      <span class="sr-only" data-theme-label>Activar modo noche</span>
+      <svg class="theme-icon theme-icon--sun" aria-hidden="true" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+      <svg class="theme-icon theme-icon--moon" aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M20.5 14.2A8.4 8.4 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z" /></svg>
+    </button>
     <button class="menu-toggle" type="button" aria-controls="primary-navigation" aria-expanded="false">
       <span class="sr-only">Abrir menú de navegación</span>
       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
@@ -34,6 +44,26 @@ const landingLink = (anchor: string) => isSpecialRequest ? `/${anchor}` : anchor
   const header = document.querySelector('.site-header');
   const menuToggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
   const menu = document.querySelector('#primary-navigation');
+  const themeToggles = [...document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]')];
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+
+  const setTheme = (theme: 'light' | 'dark') => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    localStorage.setItem('tlby-theme', theme);
+    if (themeColor) themeColor.content = theme === 'dark' ? '#0b1220' : '#f8fafc';
+    themeToggles.forEach((toggle) => {
+      const isDark = theme === 'dark';
+      toggle.setAttribute('aria-pressed', String(isDark));
+      toggle.setAttribute('aria-label', isDark ? 'Activar modo día' : 'Activar modo noche');
+      toggle.querySelector('[data-theme-label]')!.textContent = isDark ? 'Activar modo día' : 'Activar modo noche';
+    });
+  };
+
+  setTheme(document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light');
+  themeToggles.forEach((toggle) => {
+    toggle.addEventListener('click', () => setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'));
+  });
 
   if (header && menuToggle && menu) {
     const setMenuOpen = (open: boolean) => {
@@ -51,7 +81,7 @@ const landingLink = (anchor: string) => isSpecialRequest ? `/${anchor}` : anchor
       if (event.key === 'Escape') setMenuOpen(false);
     });
     window.addEventListener('resize', () => {
-      if (window.innerWidth > 1100) setMenuOpen(false);
+      if (window.innerWidth > 1300) setMenuOpen(false);
     });
   }
 </script>
